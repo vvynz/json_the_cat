@@ -6,18 +6,20 @@ const fetchBreedDescription = function (breedName, callback) {
   // allows user to specify the breed name using command-line arguments
 
   request(url, (error, response, body) => {
-    if (error) {
-      //want to check for any errors first before proceeding with the rest of the code. This will check if there are any errors with the url
-      callback("error: page undefined", error);
-    }
-
     const data = JSON.parse(body);
     let breed = data[0];
 
+    if (error) {
+      //want to check for any errors first before proceeding with the rest of the code. This will check if there are any errors with the url
+      callback("error: page undefined", error);
+      console.log(error.message);
+      return;
+    }
+    // if breed exists
     if (breed) {
-      callback(breed.description);
+      callback(null, `${breed.description}`);
     } else {
-      callback(`${breedName} is not a cat breed!`);
+      callback(`error: ${breedName} is not a cat breed!`, error); //if breed doesn't exist
     }
   });
 };
