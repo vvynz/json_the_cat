@@ -1,19 +1,22 @@
 const request = require("request");
 // request data from thecatapi breed search
 
-if (process.argv.length === 3) {
-  let query = process.argv.slice(2)[0];
+let breedName = process.argv.slice(2)[0];
+let url = `https://api.thecatapi.com/v1/breeds/search?q=${breedName}`;
+// allows user to specify the breed name using command-line arguments
 
-  request(
-    `https://api.thecatapi.com/v1/breeds/search?q=${query}`,
-    (error, response, body) => {
-      console.log("error:", error); // Print the error if one occurred
-      console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
-      // console.log("body:", body); // Print the HTML for thecatapi search homepage.
-      // console.log(typeof body); //the body returns a string
+request(url, (error, response, body) => {
+  if (error) {
+    //want to check for any errors first before proceeding with the rest of the code. This will check if there are any errors with the url
+    console.log("error: page undefined", error);
+  }
 
-      const data = JSON.parse(body);
-      console.log(data[0]);
-    }
-  );
-}
+  const data = JSON.parse(body);
+  let breed = data[0];
+
+  if (breed) {
+    console.log(breed.description);
+  } else {
+    console.log(`${breedName} is not a cat breed!`);
+  }
+});
